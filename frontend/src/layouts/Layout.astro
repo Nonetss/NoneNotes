@@ -1,22 +1,182 @@
+---
+import Header from "../components/elementos/Header.astro";
+import Sidebar from "../components/elementos/Sidebar.astro";
+
+const links = [
+  { name: "Notas", href: "/notas", icon: "📚" },
+  { name: "Calendario", href: "/calendario", icon: "📅" },
+  { name: "Recordatorios", href: "/recordatorios", icon: "⏰" },
+  { name: "Extras", href: "/extras", icon: "✨" },
+];
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio</title>
+    <style>
+      /* Paleta de colores Pantone */
+      :root {
+        --pantone-bg: #2e4057; /* Azul oscuro elegante, fondo principal */
+        --pantone-primary: #ff6f61; /* Living Coral, color principal */
+        --pantone-secondary: #88b04b; /* Verde fresco, color secundario */
+        --pantone-accent: #f7cac9; /* Rosa pastel, color de acento */
+        --pantone-neutral: #d9e3e4; /* Gris neutro, texto o detalles */
+        --pantone-text: #ffffff; /* Blanco puro, texto principal */
+        --pantone-highlight: #0f4c81; /* Classic Blue, para detalles resaltados */
+        --sidebar-width: 300px;
+        --sidebar-collapsed-width: 50px;
+        --transition-speed: 0.2s;
+      }
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+      /* Estilo general */
+      body {
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background: var(--pantone-bg);
+        color: var(--pantone-text);
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        overflow: hidden; /* Evita scroll cuando la sidebar está abierta */
+      }
+
+      .parent {
+        display: grid;
+        grid-template-columns: var(--sidebar-width) 1fr; /* Proporción entre sidebar y el contenido principal */
+        grid-template-rows: 100px 1fr; /* Header ocupa su altura fija */
+        grid-template-areas:
+          "sidebar header"
+          "sidebar main";
+        gap: 10px; /* Espaciado entre elementos */
+        width: 100%;
+        height: 100vh;
+        transition: grid-template-columns var(--transition-speed) ease;
+      }
+
+      /* Estado de la sidebar colapsada */
+      .parent.collapsed {
+        grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+      }
+
+      .sidebar {
+        grid-area: sidebar;
+        background-color: var(--pantone-secondary);
+        color: var(--pantone-text);
+        transition: width var(--transition-speed) ease;
+        overflow: hidden; /* Oculta el contenido al colapsar */
+      }
+
+      .header {
+        grid-area: header;
+        padding: 10px;
+        color: var(--pantone-text);
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Centra el contenido principal */
+        position: relative; /* Para posicionar el botón de toggle */
+      }
+
+      .main {
+        grid-area: main;
+        padding: 20px;
+        color: var(--pantone-bg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Estilos para el botón de toggle */
+      .toggle-button {
+        position: absolute;
+        left: -10px; /* Ajusta según sea necesario */
+        background: none;
+        border-radius: 0px 10px 10px 0;
+        border: none;
+        color: var(--pantone-text);
+        font-size: 1.5rem;
+        cursor: pointer;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: var(--pantone-primary);
+      }
+
+      /* Flecha dentro del botón */
+      .arrow {
+        display: inline-block;
+        transition: transform 0s;
+        font-size: 1.5rem;
+        transform: rotate(180deg);
+      }
+
+      /* Rotar la flecha cuando está colapsada */
+      .parent.collapsed .arrow {
+        transform: rotate(0deg);
+      }
+
+      /* Transición suave para el contenido principal */
+      .main {
+        transition: margin-left var(--transition-speed) ease;
+      }
+
+      /* Opcional: estilos para los enlaces en sidebar cuando está colapsada */
+      .sidebar.collapsed a span {
+        display: none; /* Oculta el texto de los enlaces */
+      }
+
+      /* Responsividad: Ajustes para pantallas pequeñas */
+      @media (max-width: 768px) {
+        .parent {
+          grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+        }
+
+        .parent.collapsed {
+          grid-template-columns: 0px 1fr;
+        }
+
+        .toggle-button {
+          left: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="parent" id="grid-container">
+      <div class="sidebar" id="sidebar">
+        <Sidebar links={links} />
+      </div>
+      <div class="header">
+        <button
+          class="toggle-button"
+          id="toggle-button"
+          aria-label="Toggle Sidebar"
+        >
+          <span class="arrow">➜</span>
+        </button>
+        <Header />
+      </div>
+      <div class="main">
+        <slot />
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggleButton = document.getElementById("toggle-button");
+        const gridContainer = document.getElementById("grid-container");
+        const sidebar = document.getElementById("sidebar");
+
+        toggleButton.addEventListener("click", () => {
+          gridContainer.classList.toggle("collapsed");
+          sidebar.classList.toggle("collapsed");
+        });
+      });
+    </script>
+  </body>
+</html>
