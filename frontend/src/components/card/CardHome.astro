@@ -1,0 +1,84 @@
+---
+export interface CardProps {
+  title: string;
+  description: string;
+  link: string;
+  svgBackground: string; // Ruta al archivo SVG o contenido inline
+}
+const { title, description, link, svgBackground } = Astro.props;
+---
+
+<a href={link} class="card">
+  <div class="svg-container">
+    <img src={svgBackground} alt={`${title} background`} />
+  </div>
+  <div class="content">
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+</a>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 250px;
+    height: 250px;
+    background: var(--pantone-primary);
+    color: var(--pantone-text);
+    border-radius: 12px;
+    text-decoration: none;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition:
+      transform 0.3s,
+      box-shadow 0.3s;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .svg-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.25; /* Ajusta la opacidad del SVG para que no opaque el texto */
+  }
+
+  .svg-container img {
+    width: 100%;
+    height: 100%;
+    transform: translate(60px, 60px) rotate(-10deg);
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    padding: 10px;
+  }
+
+  .content h3 {
+    font-size: 1.5rem;
+    font-weight: 1000;
+    margin: 10px 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+
+  .content p {
+    font-size: 1rem;
+    font-weight: 800;
+    position: relative;
+    top: 30px;
+  }
+</style>
