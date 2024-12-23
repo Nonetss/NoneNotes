@@ -3,42 +3,72 @@
 ---
 
 <header class="header">
-  <a href="/">
+  <a href="/" class="logo">
     <h1>NoneNotes</h1>
   </a>
 </header>
 
 <style>
+  /* Importar una fuente estilizada desde Google Fonts */
+  @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
+
+  :root {
+    --font-primary: "Playfair Display", serif;
+    --header-text: #ffffff; /* Azul oscuro elegante */
+    --header-shadow: rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    --header-padding: 20px 40px;
+    --logo-font-size: 2.5rem;
+    --transition-speed: 0.3s;
+  }
+</style>
+
+<style>
   .header {
-    background: var(--pantone-bg); /* Fondo principal */
-    color: var(--pantone-text); /* Texto */
+    background: transparent; /* Fondo transparente */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    padding: var(--header-padding);
+    position: relative;
+    z-index: 1000;
+  }
+
+  .logo {
+    text-decoration: none;
     display: flex;
     align-items: center;
   }
 
-  a {
-    text-decoration: none;
+  .logo h1 {
+    font-family: var(--font-primary);
+    font-size: var(--logo-font-size);
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1px;
+    transition:
+      color var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+    color: var(--header-text);
   }
 
-  .header h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--pantone-primary); /* Color del título */
-    letter-spacing: 2px;
-    margin: 0;
+  .logo:hover h1 {
+    color: #ff6f61; /* Color de acento al pasar el cursor */
+    transform: scale(1.05); /* Ligero aumento de tamaño */
   }
 
   /* Animación suave al cargar */
-  .header h1 {
-    opacity: 0;
-    transform: translateY(-10px);
-    animation: fadeIn 1s ease-out forwards;
+  .logo h1 {
+    animation: fadeIn 0.5s ease-out forwards;
   }
 
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .header {
+      padding: 15px 20px;
+    }
+
+    .logo h1 {
+      font-size: 2rem;
     }
   }
 </style>
