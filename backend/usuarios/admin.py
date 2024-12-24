@@ -24,6 +24,7 @@ class UsuarioAdmin(UserAdmin):
         ),
         ("Fechas importantes", {"fields": ("last_login", "date_joined")}),
     )
+    readonly_fields = ("last_login", "date_joined")  # Campos de solo lectura
     add_fieldsets = (
         (
             None,
