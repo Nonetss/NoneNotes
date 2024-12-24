@@ -4,52 +4,10 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+from categorias.models import Categoria
+from folders.models import Folder
+from tags.models import Tag
 from usuarios.models import Usuario
-
-
-class Categoria(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.nombre
-
-
-class Tag(models.Model):
-    nombre = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.nombre
-
-
-class Folder(models.Model):
-    nombre = models.CharField(max_length=100)
-    usuario = models.ForeignKey(
-        Usuario, on_delete=models.CASCADE, related_name="folders"
-    )
-    parent = models.ForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="subfolders",
-    )
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.nombre
-
-    class Meta:
-        unique_together = ("nombre", "usuario", "parent")
-        verbose_name = "Carpeta"
-        verbose_name_plural = "Carpetas"
-
-    def get_full_path(self):
-        path = [self.nombre]
-        parent = self.parent
-        while parent:
-            path.insert(0, parent.nombre)
-            parent = parent.parent
-        return "/".join(path)
 
 
 class Nota(models.Model):
@@ -61,7 +19,7 @@ class Nota(models.Model):
     )
     tags = models.ManyToManyField(Tag, related_name="notas", blank=True)
     folder = models.ForeignKey(
-        Folder, on_delete=models.SET_NULL, null=True, blank=True, related_name="notas"
+        Folder, on_delete=models.CASCADE, null=True, blank=True, related_name="notas"
     )
     hash = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     ruta = models.CharField(max_length=255, blank=True)  # Ruta al archivo .md
@@ -70,14 +28,26 @@ class Nota(models.Model):
         return self.titulo
 
     def save(self, *args, **kwargs):
+        """
+        Guarda la nota y genera un archivo .md si no existe.
+        """
+        # Generar ruta de almacenamiento si no está definida
         if not self.ruta:
             # Definir el directorio base para almacenar archivos Markdown
-            directory = os.path.join(settings.MEDIA_ROOT, "notas_md")
-            os.makedirs(directory, exist_ok=True)
+            if self.folder:
+                # Usar la ruta completa de la carpeta como base
+                folder_path = os.path.join(
+                    settings.MEDIA_ROOT, self.folder.get_full_path()
+                )
+            else:
+                # Carpeta predeterminada si no se asocia una
+                folder_path = os.path.join(settings.MEDIA_ROOT, "notas_md")
+
+            os.makedirs(folder_path, exist_ok=True)
 
             # Generar un nombre de archivo único basado en el hash
             filename = f"{self.hash}.md"
-            self.ruta = os.path.join("notas_md", filename)  # Ruta relativa
+            self.ruta = os.path.join(folder_path, filename)  # Ruta relativa
 
             # Crear el archivo .md con contenido inicial
             file_path = os.path.join(settings.MEDIA_ROOT, self.ruta)
@@ -85,3 +55,20 @@ class Nota(models.Model):
                 file.write(f"# {self.titulo}\n\nContenido inicial...")
 
         super().save(*args, **kwargs)
+
+    def move_to_folder(self, folder):
+        """
+        Mueve la nota a una nueva carpeta.
+        """
+        self.folder = folder
+        self.ruta = None  # Reinicia la ruta para recalcular al guardar
+        self.save()
+
+    def delete(self, *args, **kwargs):
+        """
+        Elimina el archivo asociado en el sistema de archivos.
+        """
+        file_path = os.path.join(settings.MEDIA_ROOT, self.ruta)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        super().delete(*args, **kwargs)

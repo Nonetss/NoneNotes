@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "notas",
     "usuarios",
+    "tags",
+    "folders",
+    "categorias",
 ]
 
 AUTH_USER_MODEL = "usuarios.Usuario"
