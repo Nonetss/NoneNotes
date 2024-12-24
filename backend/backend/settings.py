@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure-e=!sfx&p!=zlw5xcgpo)-a5j(xyz0=9wt1s^1vuy##ncka$+v%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -47,6 +47,7 @@ SIMPLE_JWT = {
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -55,7 +56,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
-    "corsheaders",
     "notas",
     "usuarios",
 ]
@@ -63,11 +63,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "usuarios.Usuario"
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Ejemplo: frontend local
-    "https://tudominio.com",  # Añade los dominios permitidos
-]
-
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
@@ -84,7 +80,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
