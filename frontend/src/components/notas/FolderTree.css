@@ -1,0 +1,94 @@
+/* FolderTree.css */
+
+/* Aplicar los colores definidos en :root */
+.folder-tree {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family:
+    "San Francisco",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Helvetica",
+    "Arial",
+    sans-serif;
+  width: 100%;
+  background-color: var(--pantone-bg); /* Fondo principal azul oscuro */
+  border-radius: 8px;
+}
+
+.folder-node {
+  margin-left: 1rem;
+  padding: 5px 0;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.folder-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition:
+    background-color var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+  color: var(--pantone-text); /* Texto blanco para la cabecera */
+}
+
+.folder-header:hover {
+  background-color: var(
+    --pantone-accent
+  ); /* Fondo rosa pastel cuando se pasa el ratón */
+  transform: scale(1.02); /* Le da un toque dinámico */
+}
+
+.folder-icon {
+  margin-right: 8px;
+  font-size: 18px;
+  color: var(--pantone-primary); /* Living Coral para los iconos */
+}
+
+.folder-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pantone-text); /* Texto blanco para el nombre de las carpetas */
+}
+
+.folder-subtree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition:
+    max-height var(--transition-speed) ease,
+    opacity var(--transition-speed) ease;
+  max-height: 0;
+  opacity: 0;
+  border-left: 2px solid var(--pantone-neutral); /* Gris neutro para el borde de subcarpetas */
+  padding-left: 20px; /* Sutil separación */
+}
+
+.folder-subtree.expanded {
+  max-height: 500px; /* Asegúrate de que sea suficiente para cualquier contenido */
+  opacity: 1;
+}
+
+.folder-subtree.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.folder-node .folder-header:active {
+  background-color: var(
+    --pantone-highlight
+  ); /* Classic Blue cuando se hace clic */
+}
+
+/* Agregar un toque de interacción con las subcarpetas */
+.folder-node .folder-header:focus {
+  outline: none;
+  background-color: var(--pantone-highlight);
+}

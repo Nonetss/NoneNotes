@@ -1,14 +1,10 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import NoteModal from "@components/notas/NoteModal";
+import FolderTree from "@components/notas/FolderTree";
 ---
 
 <Layout>
   <h1>Mis Notas</h1>
-  <NoteModal
-    client:visible
-    title="Nota de ejemplo"
-    date="24 de diciembre de 2024"
-    content="Este es el contenido completo de la nota. Aquí puedes agregar cualquier texto o incluso HTML."
-  />
+  <FolderTree client:visible />
 </Layout>
