@@ -31,37 +31,43 @@ const FolderTree = () => {
 const FolderNode = ({ folder }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Determinamos si la carpeta tiene contenido (subcarpetas o notas)
+  const hasContent =
+    (folder.subfolders && folder.subfolders.length > 0) ||
+    (folder.notes && folder.notes.length > 0);
+
   const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+    if (hasContent) {
+      setIsExpanded(!isExpanded);
+    }
   };
 
   return (
     <li className="folder-node">
       {/* Encabezado de la carpeta */}
       <div className="folder-header" onClick={toggleExpand}>
-        {folder.subfolders && folder.subfolders.length > 0 && (
+        {hasContent && (
           <span className="folder-icon">{isExpanded ? "▼" : "▶"}</span>
         )}
         <span className="folder-name">{folder.nombre}</span>
       </div>
 
-      {/* Solo mostramos el contenido si la carpeta está expandida */}
-      <div
-        className={`folder-subtree ${isExpanded ? "expanded" : "collapsed"}`}
-      >
-        {/* Subcarpetas (renderizado recursivo) */}
-        {folder.subfolders &&
-          folder.subfolders.map((subfolder) => (
-            <FolderNode key={subfolder.id} folder={subfolder} />
-          ))}
+      {/* Mostramos el contenido solo si está expandido */}
+      {hasContent && (
+        <div
+          className={`folder-subtree ${isExpanded ? "expanded" : "collapsed"}`}
+        >
+          {/* Subcarpetas (renderizado recursivo) */}
+          {folder.subfolders &&
+            folder.subfolders.map((subfolder) => (
+              <FolderNode key={subfolder.id} folder={subfolder} />
+            ))}
 
-        {/* Notas: aquí usamos NoteModal para cada nota */}
-        {folder.notes && folder.notes.length > 0 && (
-          <>
-            {folder.notes.map((note) => (
+          {/* Notas */}
+          {folder.notes &&
+            folder.notes.map((note) => (
               <NoteModal
                 key={note.id}
-                client:visible
                 title={note.titulo}
                 date={new Date(note.fecha_creacion).toLocaleDateString(
                   "es-ES",
@@ -74,9 +80,8 @@ const FolderNode = ({ folder }) => {
                 content={note.content}
               />
             ))}
-          </>
-        )}
-      </div>
+        </div>
+      )}
     </li>
   );
 };

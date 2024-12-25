@@ -1,6 +1,5 @@
 /* FolderTree.css */
 
-/* Aplicar los colores definidos en :root */
 .folder-tree {
   list-style: none;
   padding: 0;
@@ -15,14 +14,17 @@
     "Arial",
     sans-serif;
   width: 100%;
-  background-color: var(--pantone-bg); /* Fondo principal azul oscuro */
+  background-color: #f8f8f8; /* Fondo claro y suave */
   border-radius: 8px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.08); /* Sombra suave */
 }
 
 .folder-node {
   margin-left: 1rem;
   padding: 5px 0;
-  transition: background-color var(--transition-speed) ease;
+  transition: background-color 0.1s ease;
 }
 
 .folder-header {
@@ -33,28 +35,26 @@
   border-radius: 8px;
   font-weight: 500;
   transition:
-    background-color var(--transition-speed) ease,
-    transform var(--transition-speed) ease;
-  color: var(--pantone-text); /* Texto blanco para la cabecera */
+    background-color 0.3s ease,
+    transform 0.3s ease;
+  color: #333;
 }
 
 .folder-header:hover {
-  background-color: var(
-    --pantone-accent
-  ); /* Fondo rosa pastel cuando se pasa el ratón */
+  background-color: #e5e5e5; /* Color suave de hover */
   transform: scale(1.02); /* Le da un toque dinámico */
 }
 
 .folder-icon {
   margin-right: 8px;
-  font-size: 18px;
-  color: var(--pantone-primary); /* Living Coral para los iconos */
+  font-size: 18px; /* Iconos más grandes */
+  color: #007aff; /* Color similar al de Apple */
 }
 
 .folder-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--pantone-text); /* Texto blanco para el nombre de las carpetas */
+  color: #333;
 }
 
 .folder-subtree {
@@ -63,11 +63,11 @@
   padding: 0;
   overflow: hidden;
   transition:
-    max-height var(--transition-speed) ease,
-    opacity var(--transition-speed) ease;
+    max-height 0.3s ease,
+    opacity 0.3s ease;
   max-height: 0;
   opacity: 0;
-  border-left: 2px solid var(--pantone-neutral); /* Gris neutro para el borde de subcarpetas */
+  border-left: 2px solid #e0e0e0; /* Borde lateral para las subcarpetas */
   padding-left: 20px; /* Sutil separación */
 }
 
@@ -82,13 +82,11 @@
 }
 
 .folder-node .folder-header:active {
-  background-color: var(
-    --pantone-highlight
-  ); /* Classic Blue cuando se hace clic */
+  background-color: #d1d1d6; /* Color suave para cuando se hace clic */
 }
 
 /* Agregar un toque de interacción con las subcarpetas */
 .folder-node .folder-header:focus {
   outline: none;
-  background-color: var(--pantone-highlight);
+  background-color: #d1d1d6;
 }
