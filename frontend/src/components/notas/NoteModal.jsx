@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { createBlendy } from "blendy";
+import ReactMarkdown from "react-markdown";
 import "./NoteModal.css";
+import "./NoteContenido.css";
 
 const NoteModal = ({ title, date, content }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +42,7 @@ const NoteModal = ({ title, date, content }) => {
         data-blendy-from="note-modal"
       >
         <h3>{title}</h3>
-        <p>{date}</p>
+        <p style={{ fontStyle: "italic" }}>{date}</p>
       </div>
 
       {/* Modal */}
@@ -58,8 +60,19 @@ const NoteModal = ({ title, date, content }) => {
               &times;
             </button>
             <h2>{title}</h2>
-            <p>{date}</p>
-            <div className="note-content">{content}</div>
+            <p
+              style={{
+                fontStyle: "italic",
+                textAlign: "center",
+                color: "#3f3f3f",
+              }}
+            >
+              {date}
+            </p>
+            <div className="note-content">
+              {/* Renderización del contenido en formato Markdown */}
+              <ReactMarkdown>{content}</ReactMarkdown>
+            </div>
           </div>
         </div>
       )}
