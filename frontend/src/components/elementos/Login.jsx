@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { login } from "@utils/api.jsx"; // Asegúrate de que la ruta es correcta
+import { login } from "@/utils/api.jsx"; // Asegúrate de que la ruta es correcta
 
 const LoginForm = () => {
   const [email, setEmail] = useState(""); // Estado para email
