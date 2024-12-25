@@ -1,6 +1,7 @@
 ---
 import Header from "@components/elementos/Header.astro";
 import Sidebar from "@components/elementos/Sidebar.astro";
+import "@/styles/global.css";
 
 const links = [
   { name: "Notas", href: "/notas", icon: "📚" },
@@ -16,178 +17,19 @@ const links = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inicio</title>
-    <style>
-      /* Paleta de colores Pantone */
-      :root {
-        --pantone-bg: #2e4057; /* Azul oscuro elegante, fondo principal */
-        --pantone-primary: #ff6f61; /* Living Coral, color principal */
-        --pantone-secondary: #88b04b; /* Verde fresco, color secundario */
-        --pantone-accent: #f7cac9; /* Rosa pastel, color de acento */
-        --pantone-neutral: #d9e3e4; /* Gris neutro, texto o detalles */
-        --pantone-text: #ffffff; /* Blanco puro, texto principal */
-        --pantone-highlight: #0f4c81; /* Classic Blue, para detalles resaltados */
-        --sidebar-width: 300px;
-        --sidebar-collapsed-width: 50px;
-        --transition-speed: 0.2s;
-      }
-
-      /* Estilo general */
-      body {
-        margin: 0;
-        font-family: "Arial", sans-serif;
-        background: var(--pantone-bg);
-        color: var(--pantone-text);
-        justify-content: center;
-        min-height: 100vh;
-        width: 100%;
-      }
-
-      .parent {
-        display: grid;
-        grid-template-columns: var(--sidebar-width) 1fr;
-        grid-template-rows: 100px 1fr;
-        grid-template-areas:
-          "sidebar header"
-          "sidebar main";
-        gap: 10px;
-        width: 100%;
-        height: 100vh;
-        transition: grid-template-columns var(--transition-speed) ease;
-      }
-
-      /* Estado de la sidebar colapsada */
-      .parent.collapsed {
-        grid-template-columns: var(--sidebar-collapsed-width) 1fr;
-      }
-
-      .sidebar {
-        grid-area: sidebar;
-        background-color: var(--pantone-secondary);
-        color: var(--pantone-text);
-        transition: width var(--transition-speed) ease;
-        overflow: hidden;
-      }
-
-      .header {
-        grid-area: header;
-        padding: 10px;
-        color: var(--pantone-text);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      }
-
-      .main {
-        grid-area: main;
-        padding: 20px;
-        color: var(--pantone-bg);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        overflow-y: auto;
-        scroll-behavior: smooth;
-      }
-
-      /* Personalización del scroll para navegadores WebKit (Chrome, Edge, etc.) */
-      .main::-webkit-scrollbar {
-        width: 12px; /* Ancho del scrollbar */
-      }
-
-      .main::-webkit-scrollbar-thumb {
-        background: linear-gradient(
-          135deg,
-          var(--pantone-primary),
-          var(--pantone-highlight)
-        ); /* Degradado elegante */
-        border-radius: 10px; /* Bordes completamente redondeados */
-        border: 3px solid transparent; /* Espaciado alrededor */
-        background-clip: padding-box;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra interna */
-      }
-
-      .main::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(
-          135deg,
-          var(--pantone-accent),
-          var(--pantone-primary)
-        ); /* Cambia el degradado al pasar el mouse */
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra externa */
-      }
-
-      .main::-webkit-scrollbar-track {
-        background: var(--pantone-neutral); /* Fondo del track */
-        border-radius: 10px;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Sombra interna */
-      }
-
-      /* Scrollbar para Firefox */
-      .main {
-        scrollbar-width: thin;
-        scrollbar-color: var(--pantone-highlight) var(--pantone-neutral);
-      }
-
-      .main::-webkit-scrollbar-corner {
-        background: var(--pantone-neutral);
-      }
-
-      /* Estilos para el botón de toggle */
-      .toggle-button {
-        position: absolute;
-        left: -10px;
-        background: none;
-        border-radius: 0px 10px 10px 0;
-        border: none;
-        color: var(--pantone-text);
-        font-size: 1.5rem;
-        cursor: pointer;
-        outline: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        background-color: var(--pantone-primary);
-      }
-
-      /* Flecha dentro del botón */
-      .arrow {
-        display: inline-block;
-        transition: transform 0s;
-        font-size: 1.5rem;
-        transform: rotate(180deg);
-      }
-
-      /* Rotar la flecha cuando está colapsada */
-      .parent.collapsed .arrow {
-        transform: rotate(0deg);
-      }
-
-      /* Transición suave para el contenido principal */
-      .main {
-        transition: margin-left var(--transition-speed) ease;
-        color: var(--pantone-text);
-      }
-
-      /* Responsividad */
-      @media (max-width: 768px) {
-        .parent {
-          grid-template-columns: var(--sidebar-collapsed-width) 1fr;
-        }
-
-        .parent.collapsed {
-          grid-template-columns: 0px 1fr;
-        }
-
-        .toggle-button {
-          left: 10px;
-        }
-      }
-    </style>
   </head>
   <body>
-    <div class="parent" id="grid-container">
+    <!-- Observa cómo ahora simplemente usaremos la clase 'collapsed' en el HTML -->
+    <div
+      class={`parent ${
+        // Aunque aquí se mantiene el check, la clase ya existe si localStorage nos dice que sí.
+        typeof window !== "undefined" &&
+        localStorage.getItem("sidebar-collapsed") === "true"
+          ? "collapsed"
+          : ""
+      }`}
+      id="grid-container"
+    >
       <div class="sidebar" id="sidebar">
         <Sidebar links={links} />
       </div>
@@ -212,9 +54,29 @@ const links = [
         const gridContainer = document.getElementById("grid-container");
         const sidebar = document.getElementById("sidebar");
 
+        // Inicializar el estado de la sidebar con la clase ya puesta en <html>
+        // (aunque no es estrictamente necesario, lo mantenemos por compatibilidad).
+        try {
+          const isCollapsed =
+            localStorage.getItem("sidebar-collapsed") === "true";
+          if (isCollapsed) {
+            gridContainer.classList.add("collapsed");
+            sidebar.classList.add("collapsed");
+          }
+        } catch (e) {
+          console.error("Error al leer el estado de la sidebar:", e);
+        }
+
         toggleButton.addEventListener("click", () => {
           gridContainer.classList.toggle("collapsed");
           sidebar.classList.toggle("collapsed");
+          // Guardar el estado en localStorage
+          try {
+            const isCollapsed = gridContainer.classList.contains("collapsed");
+            localStorage.setItem("sidebar-collapsed", isCollapsed);
+          } catch (e) {
+            console.error("Error al guardar el estado de la sidebar:", e);
+          }
         });
       });
     </script>
