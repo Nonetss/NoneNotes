@@ -1,0 +1,102 @@
+/* General */
+.fc {
+  font-family: "Arial", sans-serif;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Toolbar */
+.fc-toolbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  padding: 10px 15px;
+  border-radius: 5px 5px 0 0;
+}
+
+.fc-toolbar h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #343a40;
+}
+
+.fc-toolbar button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fc-toolbar button:hover {
+  background-color: #0056b3;
+}
+
+.fc-toolbar button.fc-button-active {
+  background-color: #0056b3;
+}
+
+/* Day Cells */
+.fc-daygrid-day {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  transition: background-color 0.3s ease;
+}
+
+.fc-daygrid-day:hover {
+  background-color: #e9ecef;
+}
+
+/* Today Highlight */
+.fc-day-today {
+  background-color: #f1f8ff !important;
+  border: 1px solid #007bff;
+}
+
+/* Events */
+.fc-event {
+  background-color: #17a2b8;
+  color: #ffffff;
+  border: none;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.fc-event:hover {
+  transform: scale(1.05);
+  background-color: #138496;
+}
+
+/* Week and Timegrid Views */
+.fc-timegrid-slot {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.fc-timegrid-slot:hover {
+  background-color: #e9ecef;
+}
+
+/* Footer and Miscellaneous */
+.fc-toolbar.fc-footer-toolbar {
+  border-top: 1px solid #dee2e6;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.fc-toolbar-title {
+  color: #343a40;
+  font-weight: bold;
+}
+
+.fc-view {
+  border-radius: 0 0 5px 5px;
+}
