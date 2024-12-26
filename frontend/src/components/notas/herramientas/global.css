@@ -1,0 +1,89 @@
+input {
+  border: 3px solid #000;
+  border-radius: 4px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+}
+
+h2 {
+  color: var(--header);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+}
+
+.modal-contenido {
+  min-width: 500px;
+  min-height: 60vh;
+  position: relative;
+  background-color: var(--color-primary);
+  border-radius: 10px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+  padding: 20px 10px 60px 10px;
+}
+
+.cerrar-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: var(--header);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.cerrar-button:hover {
+  color: var(--color-highlight);
+}
+
+/* Estilo de los boton de enviar */
+.submit-button {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: var(--color-highlight);
+  padding: 10px 15px;
+  border-radius: 4px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+}
+
+/* Estilo de los botones de fuera */
+.button {
+  padding: 0px 20px;
+  border-radius: 10px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+}
+
+.create-note {
+  background-color: #4caf50;
+}
+
+.create-folder {
+  background-color: #2196f3;
+}
+
+.create-tag {
+  background-color: #ff9800;
+}
+
+.create-category {
+  background-color: #9c27b0;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
