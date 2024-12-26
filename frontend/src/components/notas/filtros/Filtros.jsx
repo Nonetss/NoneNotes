@@ -118,9 +118,7 @@ const Filtro = ({ onApplyFilters }) => {
                     </option>
                   ))}
                 </select>
-              </div>
 
-              <div className="form-group">
                 <label htmlFor="tags">Tags:</label>
                 <select
                   id="tags"
