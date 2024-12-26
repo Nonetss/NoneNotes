@@ -1,74 +1,52 @@
----
-
----
-
-<header class="header">
+<header>
   <a href="/" class="logo">
-    <h1>NoneNotes</h1>
+    <h1>
+      <span class="half-color">None</span><span>Notes</span>
+    </h1>
   </a>
 </header>
 
 <style>
-  /* Importar una fuente estilizada desde Google Fonts */
-  @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
-
-  :root {
-    --font-primary: "Playfair Display", serif;
-    --header-text: #ffffff; /* Azul oscuro elegante */
-    --header-shadow: rgba(0, 0, 0, 0.1); /* Sombra sutil */
-    --header-padding: 20px 40px;
-    --logo-font-size: 2.5rem;
-    --transition-speed: 0.3s;
-  }
-</style>
-
-<style>
-  .header {
-    background: transparent; /* Fondo transparente */
+  header {
     display: flex;
     align-items: center;
-    justify-content: center; /* Centra el contenido horizontalmente */
-    padding: var(--header-padding);
+    justify-content: center;
     position: relative;
     z-index: 1000;
   }
 
   .logo {
-    text-decoration: none;
+    text-decoration: none; /* Elimina el subrayado en el estado normal */
     display: flex;
     align-items: center;
+    color: inherit; /* Asegura que el color se herede correctamente */
+  }
+
+  /* Elimina el subrayado en todos los estados del enlace */
+  .logo:link,
+  .logo:visited,
+  .logo:hover,
+  .logo:active {
+    text-decoration: none;
   }
 
   .logo h1 {
-    font-family: var(--font-primary);
-    font-size: var(--logo-font-size);
-    font-weight: 700;
+    font-family: var(--header);
+    font-size: 2em;
+    font-weight: 900;
     margin: 0;
-    letter-spacing: 1px;
     transition:
       color var(--transition-speed) ease,
       transform var(--transition-speed) ease;
-    color: var(--header-text);
+    color: var(--header);
   }
 
-  .logo:hover h1 {
-    color: #ff6f61; /* Color de acento al pasar el cursor */
-    transform: scale(1.05); /* Ligero aumento de tamaño */
+  /* Estilos específicos para cada mitad */
+  .half-color {
+    color: var(--header);
   }
 
-  /* Animación suave al cargar */
-  .logo h1 {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-
-  /* Responsividad */
-  @media (max-width: 768px) {
-    .header {
-      padding: 15px 20px;
-    }
-
-    .logo h1 {
-      font-size: 2rem;
-    }
+  .logo span:nth-child(2) {
+    color: #f6b567;
   }
 </style>

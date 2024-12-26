@@ -1,23 +1,28 @@
-/* Paleta de colores Pantone */
 :root {
-  --pantone-bg: #2e4057; /* Azul oscuro elegante, fondo principal */
-  --pantone-primary: #ff6f61; /* Living Coral, color principal */
-  --pantone-secondary: #88b04b; /* Verde fresco, color secundario */
-  --pantone-accent: #f7cac9; /* Rosa pastel, color de acento */
-  --pantone-neutral: #d9e3e4; /* Gris neutro, texto o detalles */
-  --pantone-text: #ffffff; /* Blanco puro, texto principal */
-  --pantone-highlight: #0f4c81; /* Classic Blue, para detalles resaltados */
+  --bg: #f6f6f2;
+  --color-primary: #fbf0da;
+  --color-secondary: #88b04b;
+  --color-accent: #fbcc8d;
+  --color-neutral: #e4e5e2;
+  --color-box: #ebdab7;
+  --header: #37393e;
+  --text: #646e71;
+  --color-highlight: #f66874;
   --sidebar-width: 300px;
   --sidebar-collapsed-width: 50px;
+  --toggle-button-offset: 310px; /* Botón con sidebar abierta */
+  --toggle-button-offset-collapsed: 60px; /* Botón con sidebar colapsada */
   --transition-speed: 0.2s;
 }
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 /* Estilo general */
 body {
   margin: 0;
-  font-family: "Arial", sans-serif;
-  background: var(--pantone-bg);
-  color: var(--pantone-text);
+  font-family: "Roboto", sans-serif; /* Aplica Roboto a todo el texto */
+  background: var(--bg);
+  color: var(--text);
   justify-content: center;
   min-height: 100vh;
   width: 100%;
@@ -26,11 +31,10 @@ body {
 .parent {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: 100px 1fr;
+  grid-template-rows: 80px 1fr;
   grid-template-areas:
     "sidebar header"
     "sidebar main";
-  gap: 10px;
   width: 100%;
   height: 100vh;
   transition: grid-template-columns var(--transition-speed) ease;
@@ -43,8 +47,8 @@ body {
 
 .sidebar {
   grid-area: sidebar;
-  background-color: var(--pantone-secondary);
-  color: var(--pantone-text);
+  background-color: var(--color-secondary);
+  color: var(--text);
   transition: width var(--transition-speed) ease;
   overflow: hidden;
 }
@@ -52,17 +56,18 @@ body {
 .header {
   grid-area: header;
   padding: 10px;
-  color: var(--pantone-text);
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  border-bottom: 3px solid #000;
 }
 
 .main {
   grid-area: main;
   padding: 20px;
-  color: var(--pantone-bg);
+  color: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -70,58 +75,19 @@ body {
   overflow-y: auto;
   scroll-behavior: smooth;
   transition: margin-left var(--transition-speed) ease;
-}
-
-/* Personalización del scroll para navegadores WebKit (Chrome, Edge, etc.) */
-.main::-webkit-scrollbar {
-  width: 12px; /* Ancho del scrollbar */
-}
-
-.main::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    135deg,
-    var(--pantone-primary),
-    var(--pantone-highlight)
-  ); /* Degradado elegante */
-  border-radius: 10px; /* Bordes completamente redondeados */
-  border: 3px solid transparent; /* Espaciado alrededor */
-  background-clip: padding-box;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra interna */
-}
-
-.main::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    135deg,
-    var(--pantone-accent),
-    var(--pantone-primary)
-  ); /* Cambia el degradado al pasar el mouse */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra externa */
-}
-
-.main::-webkit-scrollbar-track {
-  background: var(--pantone-neutral); /* Fondo del track */
-  border-radius: 10px;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Sombra interna */
-}
-
-/* Scrollbar para Firefox */
-.main {
-  scrollbar-width: thin;
-  scrollbar-color: var(--pantone-highlight) var(--pantone-neutral);
-}
-
-.main::-webkit-scrollbar-corner {
-  background: var(--pantone-neutral);
+  overflow-x: hidden; /* Evita el desplazamiento horizontal */
 }
 
 /* Estilos para el botón de toggle */
 .toggle-button {
   position: absolute;
-  left: -10px;
+  left: var(--toggle-button-offset);
+  bottom: 20px;
   background: none;
-  border-radius: 0px 10px 10px 0;
-  border: none;
-  color: var(--pantone-text);
+  border-radius: 10px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+  color: var(--text);
   font-size: 1.5rem;
   cursor: pointer;
   outline: none;
@@ -130,12 +96,19 @@ body {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: var(--pantone-primary);
+  background-color: var(--color-primary);
+  transition: left var(--transition-speed) ease;
+}
+
+/* Ajuste de posición del botón cuando la sidebar está colapsada */
+.parent.collapsed .toggle-button {
+  left: var(--toggle-button-offset-collapsed);
 }
 
 /* Flecha dentro del botón */
 .arrow {
   display: inline-block;
+  color: var(--header);
   transition: transform 0.2s;
   font-size: 1.5rem;
   transform: rotate(180deg);
@@ -157,6 +130,6 @@ body {
   }
 
   .toggle-button {
-    left: 10px;
+    left: var(--toggle-button-offset-collapsed);
   }
 }

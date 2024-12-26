@@ -4,21 +4,11 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family:
-    "San Francisco",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Roboto",
-    "Helvetica",
-    "Arial",
-    sans-serif;
   width: 100%;
-  background-color: #f8f8f8; /* Fondo claro y suave */
-  border-radius: 8px;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.08); /* Sombra suave */
+  background-color: var(--color-neutral);
+  border-radius: 10px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
 }
 
 .folder-node {
@@ -37,18 +27,13 @@
   transition:
     background-color 0.3s ease,
     transform 0.3s ease;
-  color: #333;
-}
-
-.folder-header:hover {
-  background-color: #e5e5e5; /* Color suave de hover */
-  transform: scale(1.02); /* Le da un toque dinámico */
+  color: var(--header);
 }
 
 .folder-icon {
   margin-right: 8px;
   font-size: 18px; /* Iconos más grandes */
-  color: #007aff; /* Color similar al de Apple */
+  color: var(--header); /* Color similar al de Apple */
 }
 
 .folder-name {
@@ -59,16 +44,22 @@
 
 .folder-subtree {
   list-style: none;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
   transition:
     max-height 0.3s ease,
     opacity 0.3s ease;
   max-height: 0;
   opacity: 0;
-  border-left: 2px solid #e0e0e0; /* Borde lateral para las subcarpetas */
-  padding-left: 20px; /* Sutil separación */
+  border-left: 2px dashed transparent;
+  border-image: repeating-linear-gradient(
+      to bottom,
+      #000,
+      #000 10px,
+      transparent 10px,
+      transparent 20px
+    )
+    1;
+  padding: 0px 10px;
 }
 
 .folder-subtree.expanded {
@@ -79,10 +70,6 @@
 .folder-subtree.collapsed {
   max-height: 0;
   opacity: 0;
-}
-
-.folder-node .folder-header:active {
-  background-color: #d1d1d6; /* Color suave para cuando se hace clic */
 }
 
 /* Agregar un toque de interacción con las subcarpetas */

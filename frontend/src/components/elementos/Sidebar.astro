@@ -27,10 +27,11 @@ const { links } = Astro.props;
   .sidebar {
     top: 0;
     left: 0;
-    height: 100vh;
-    background: #5a7085;
-    color: var(--pantone-text);
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    height: 99vh;
+    background: var(--color-box);
+    color: var(--text);
+    border: 3px solid #000;
+    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* sombra definida */
     display: flex;
     flex-direction: column;
   }
@@ -50,17 +51,16 @@ const { links } = Astro.props;
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: var(--pantone-text);
-    padding: 10px 10px;
-    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 8px;
     transition:
       background 0.3s ease,
       transform 0.2s ease;
   }
 
   .nav a:hover {
-    background: var(--pantone-primary);
-    color: var(--pantone-bg);
+    background: var(--color-accent);
+    color: var(--bg);
   }
 
   .icon {

@@ -28,20 +28,19 @@ const { title, description, link, svgBackground } = Astro.props;
     text-align: center;
     width: 400px;
     height: 250px;
-    background: var(--pantone-primary);
-    color: var(--pantone-text);
-    border-radius: 12px;
+    background: var(--color-box);
+    color: var(--header);
+    border-radius: 10px;
     text-decoration: none;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition:
-      transform 0.3s,
-      box-shadow 0.3s;
+    border: 3px solid #000;
+    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+    transition: transform 0.3s;
   }
 
   .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transform: scale(1.01);
+    background-color: var(--color-accent);
   }
 
   .svg-container {

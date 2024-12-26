@@ -25,8 +25,8 @@ const links = [
         // Aunque aquí se mantiene el check, la clase ya existe si localStorage nos dice que sí.
         typeof window !== "undefined" &&
         localStorage.getItem("sidebar-collapsed") === "true"
-          ? "collapsed"
-          : ""
+          ? ""
+          : "collapsed"
       }`}
       id="grid-container"
     >
@@ -34,6 +34,10 @@ const links = [
         <Sidebar links={links} />
       </div>
       <div class="header">
+        <Header />
+      </div>
+      <div class="main">
+        <slot />
         <button
           class="toggle-button"
           id="toggle-button"
@@ -41,10 +45,6 @@ const links = [
         >
           <span class="arrow">➜</span>
         </button>
-        <Header />
-      </div>
-      <div class="main">
-        <slot />
       </div>
     </div>
 
