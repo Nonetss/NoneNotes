@@ -1,10 +1,9 @@
 import os
 
-from django.conf import settings
-from rest_framework import serializers
-
 from categorias.models import Categoria
+from django.conf import settings
 from folders.models import Folder
+from rest_framework import serializers
 from tags.models import Tag
 
 from .models import Nota
@@ -95,7 +94,12 @@ class NotaSerializer(serializers.ModelSerializer):
         Crea una nueva nota con su archivo Markdown asociado.
         """
         folder = validated_data.pop("folder", None)
-        usuario = self.context["request"].user
+        usuario = self.context["request"].user  # Usuario autenticado
+
+        # Remover `usuario` de validated_data si está presente
+        if "usuario" in validated_data:
+            validated_data.pop("usuario")
+
         nota = Nota.objects.create(usuario=usuario, folder=folder, **validated_data)
         return nota
 
