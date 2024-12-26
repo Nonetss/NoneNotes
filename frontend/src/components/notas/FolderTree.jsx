@@ -9,10 +9,20 @@ const FolderTree = () => {
   useEffect(() => {
     const fetchFolders = async () => {
       try {
+        // Siempre realiza la solicitud al backend para obtener datos actualizados
         const response = await api.get("/folders");
         setFolders(response.data);
+
+        // Sobrescribe el localStorage con los datos más recientes
+        localStorage.setItem("folders", JSON.stringify(response.data));
       } catch (error) {
         console.error("Error fetching folders:", error);
+
+        // Si hay un error, intenta cargar desde el localStorage
+        const savedFolders = localStorage.getItem("folders");
+        if (savedFolders) {
+          setFolders(JSON.parse(savedFolders));
+        }
       }
     };
 
@@ -20,11 +30,14 @@ const FolderTree = () => {
   }, []);
 
   return (
-    <ul className="folder-tree">
+    <div className="global">
+      <h1 className="titulo">Carpetas</h1>
       {folders.map((folder) => (
-        <FolderNode key={folder.id} folder={folder} />
+        <ul className="folder-tree">
+          <FolderNode key={folder.id} folder={folder} />
+        </ul>
       ))}
-    </ul>
+    </div>
   );
 };
 
@@ -47,7 +60,9 @@ const FolderNode = ({ folder }) => {
       {/* Encabezado de la carpeta */}
       <div className="folder-header" onClick={toggleExpand}>
         {hasContent && (
-          <span className="folder-icon">{isExpanded ? "▼" : "▶"}</span>
+          <span className={`folder-icon ${isExpanded ? "expanded" : ""}`}>
+            ➜
+          </span>
         )}
         <span className="folder-name">{folder.nombre}</span>
       </div>

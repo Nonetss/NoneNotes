@@ -1,11 +1,28 @@
 /* FolderTree.css */
+.titulo {
+  font-size: 2rem;
+  color: var(--header);
+  text-decoration: underline;
+}
+
+.global {
+  width: 95%;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-neutral);
+  padding: 10px 30px 30px 20px;
+  border-radius: 10px;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
+}
 
 .folder-tree {
   list-style: none;
+  background-color: var(--color-primary);
   padding: 0;
   margin: 0;
   width: 100%;
-  background-color: var(--color-neutral);
   border-radius: 10px;
   border: 3px solid #000;
   box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
@@ -14,7 +31,11 @@
 .folder-node {
   margin-left: 1rem;
   padding: 5px 0;
-  transition: background-color 0.1s ease;
+  transition: background-color 0.3s ease;
+}
+
+.folder-icon.expanded {
+  transform: rotate(90deg); /* Rotar 90 grados cuando está expandido */
 }
 
 .folder-header {
