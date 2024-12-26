@@ -46,7 +46,7 @@ const NewFolder = () => {
         onClick={openModal}
         data-blendy-from="new-category"
       >
-        <p>Nueva carpeta</p>
+        <p>Nueva categoría</p>
       </div>
 
       {/* Modal */}
@@ -65,7 +65,7 @@ const NewFolder = () => {
             </button>
             <h2>Crear Nueva Carpeta</h2>
             <form onSubmit={handleSubmit}>
-              <div className="new-folder-form-group">
+              <div className="form-group">
                 <label htmlFor="folderName">Nombre de la carpeta:</label>
                 <input
                   type="text"
@@ -76,7 +76,7 @@ const NewFolder = () => {
                 />
               </div>
               <button type="submit" className="submit-button">
-                Crear Carpeta
+                Crear categoría
               </button>
             </form>
           </div>

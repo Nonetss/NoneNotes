@@ -65,7 +65,7 @@ const NewTag = () => {
             </button>
             <h2>Crear Nuevo Tag</h2>
             <form onSubmit={handleSubmit}>
-              <div className="new-tag-form-group">
+              <div className="form-group">
                 <label htmlFor="tagName">Nombre del Tag:</label>
                 <input
                   type="text"
