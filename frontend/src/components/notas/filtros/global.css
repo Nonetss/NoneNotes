@@ -1,11 +1,8 @@
-input {
-  box-shadow: none !important;
-  border: none !important;
-}
-
 .lupita {
   border: none;
   background-color: #fff;
+  box-shadow: none !important;
+  border: none !important;
 }
 .search-bar {
   background-color: #fff;

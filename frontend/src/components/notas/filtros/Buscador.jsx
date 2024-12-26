@@ -13,6 +13,7 @@ const SearchBar = ({ onSearch }) => {
     <div className="search-bar">
       <input
         type="text"
+        className="lupita"
         placeholder="Buscar carpetas y notas..."
         value={searchTerm}
         onChange={handleChange}
