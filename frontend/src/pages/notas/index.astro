@@ -1,10 +1,27 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import NoteModal from "@components/notas/NoteModal";
 import FolderTree from "@components/notas/FolderTree";
+import Herramientas from "@components/notas/Herramientas";
+import Folder from "@components/notas/herramientas/Folder.jsx";
+import Nota from "@components/notas/herramientas/Nota.jsx";
+import Tag from "@components/notas/herramientas/Tag.jsx";
+import Categorias from "@components/notas/herramientas/Categorias.jsx";
 ---
 
 <Layout>
-  <h1>Mis Notas</h1>
+  <div>
+    <Folder client:visible />
+    <Nota client:visible />
+    <Tag client:visible />
+    <Categorias client:visible />
+  </div>
   <FolderTree client:visible />
 </Layout>
+
+<style>
+  div {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+</style>
