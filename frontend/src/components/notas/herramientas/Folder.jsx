@@ -75,6 +75,7 @@ const NewFolder = () => {
       setFolderName("");
       setFolderParent("");
       closeModal();
+      location.reload();
     } catch (error) {
       console.error(
         "Error al crear la carpeta:",

@@ -83,6 +83,7 @@ const NewNote = () => {
 
       // Cierra la modal
       closeModal();
+      location.reload();
     } catch (error) {
       console.error("Error al crear la nota:", error);
       setError(error.message || "Error desconocido.");
