@@ -1,5 +1,4 @@
 from django.db import models
-
 from usuarios.models import Usuario
 
 
@@ -35,9 +34,3 @@ class Folder(models.Model):
             path.insert(0, parent.nombre)
             parent = parent.parent
         return "/".join(path)
-
-    def delete(self, *args, **kwargs):
-        # Eliminar recursivamente todas las subcarpetas
-        for subfolder in self.subfolders.all():
-            subfolder.delete()
-        super().delete(*args, **kwargs)
