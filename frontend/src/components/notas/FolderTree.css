@@ -17,6 +17,19 @@
   box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.9); /* Sombra definida */
 }
 
+.primero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filtrar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
 .folder-tree {
   list-style: none;
   background-color: var(--color-primary);
@@ -86,6 +99,7 @@
 .folder-subtree.expanded {
   max-height: 500px; /* Asegúrate de que sea suficiente para cualquier contenido */
   opacity: 1;
+  overflow-y: auto;
 }
 
 .folder-subtree.collapsed {
