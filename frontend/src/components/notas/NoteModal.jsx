@@ -29,11 +29,6 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
   };
 
   const closeModal = () => {
-    if (isEditing) {
-      alert("Primero debes salir del modo edición para cerrar la nota.");
-      return;
-    }
-
     setIsAnimating(true);
     blendyRef.current.untoggle(`note-modal-${id}`, () => {
       setIsAnimating(false);
@@ -52,12 +47,18 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
 
   const handleSave = async () => {
     try {
-      await api.put(`/notas/notas/${id}/content/`, { content: updatedContent });
-      onUpdate(updatedContent);
-      setIsEditing(false);
+      const response = await api.put(`/notas/notas/${id}/content/`, {
+        content: updatedContent,
+      });
+      console.log("Cambios guardados correctamente:", response.data);
+
+      if (typeof onUpdate === "function") {
+        onUpdate(updatedContent);
+      } else {
+        console.warn("onUpdate no es una función válida");
+      }
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
-      alert("Ocurrió un error al guardar los cambios. Intenta nuevamente.");
     }
   };
 
