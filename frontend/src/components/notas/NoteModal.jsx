@@ -13,7 +13,6 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedContent, setUpdatedContent] = useState(content);
   const blendyRef = useRef(null);
-  const editorRef = useRef(null);
 
   useEffect(() => {
     if (!blendyRef.current) {
