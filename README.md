@@ -48,6 +48,10 @@ Una vez completado el desarrollo principal, el siguiente paso será dockerizar e
 
 ![Screenshot de NoneNote](./imagenes/screenshot_26122024_191048.jpg)
 
+### Editor de notas:
+
+![Screenshot de NoneNote](./imagenes/screenshot_27122024_182712.jpg)
+
 ## TODO
 
 ### Calendario
