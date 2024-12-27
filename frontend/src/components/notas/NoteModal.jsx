@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { createBlendy } from "blendy";
 import ReactMarkdown from "react-markdown";
-import api from "@/utils/api";
 import MdEditor from "react-markdown-editor-lite";
+import api from "@/utils/api";
 import "./NoteModal.css";
 import "./NoteEdicion.css";
 import "./NoteContenido.css";
@@ -18,39 +18,32 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
     if (!blendyRef.current) {
       blendyRef.current = createBlendy();
     }
-    blendyRef.current.update();
   }, []);
-
-  useEffect(() => {
-    if (content) {
-      setUpdatedContent(content); // Sincroniza el contenido inicial con el estado
-    }
-  }, [content]);
 
   const openModal = () => {
     setIsAnimating(true);
     setIsModalOpen(true);
-    blendyRef.current.toggle("note-modal", () => {
+    blendyRef.current.toggle(`note-modal-${id}`, () => {
       setIsAnimating(false);
     });
   };
 
   const closeModal = () => {
     if (isEditing) {
-      alert("Primero debes salir del modo edición para cerrar la nota");
+      alert("Primero debes salir del modo edición para cerrar la nota.");
       return;
     }
 
     setIsAnimating(true);
-    blendyRef.current.untoggle("note-modal", () => {
+    blendyRef.current.untoggle(`note-modal-${id}`, () => {
       setIsAnimating(false);
       setIsModalOpen(false);
-      setIsEditing(false); // Salir del modo de edición al cerrar
+      setIsEditing(false);
     });
   };
 
   const handleEditToggle = () => {
-    setIsEditing(!isEditing); // Cambia entre modo edición y visualización
+    setIsEditing(!isEditing);
   };
 
   const handleEditorChange = ({ text }) => {
@@ -59,11 +52,12 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
 
   const handleSave = async () => {
     try {
-      // Actualiza el contenido en el backend
       await api.put(`/notas/notas/${id}/content/`, { content: updatedContent });
-      onUpdate(updatedContent); // Llama al callback para actualizar el contenido en el padre
+      onUpdate(updatedContent);
+      setIsEditing(false);
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
+      alert("Ocurrió un error al guardar los cambios. Intenta nuevamente.");
     }
   };
 
@@ -72,7 +66,7 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
       <div
         className="note-summary"
         onClick={openModal}
-        data-blendy-from="note-modal"
+        data-blendy-from={`note-modal-${id}`}
       >
         <h3>{title}</h3>
         <p style={{ fontStyle: "italic" }}>{date}</p>
@@ -81,7 +75,7 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
       {(isModalOpen || isAnimating) && (
         <div
           className={`modal-overlay ${isModalOpen ? "active" : ""}`}
-          data-blendy-to="note-modal"
+          data-blendy-to={`note-modal-${id}`}
           onClick={closeModal}
         >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -117,7 +111,7 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
                     Guardar
                   </button>
                   <button onClick={handleEditToggle} className="cancel-button">
-                    Salir
+                    Cancelar
                   </button>
                 </>
               ) : (
