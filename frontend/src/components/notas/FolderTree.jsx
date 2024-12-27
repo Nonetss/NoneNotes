@@ -183,6 +183,7 @@ const FolderNode = ({ folder }) => {
             folder.notes.map((note) => (
               <NoteModal
                 key={note.id}
+                id={note.id} // Aquí pasas el ID de la nota
                 title={note.titulo}
                 date={new Date(note.fecha_creacion).toLocaleDateString(
                   "es-ES",
