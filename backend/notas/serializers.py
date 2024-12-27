@@ -1,27 +1,49 @@
+# notas/serializers.py
 import os
 
 from categorias.models import Categoria
+from categorias.serializers import CategoriaSerializer
 from django.conf import settings
 from folders.models import Folder
 from rest_framework import serializers
 from tags.models import Tag
+from tags.serializers import TagSerializer
 
 from .models import Nota
 
 
 class NotaSerializer(serializers.ModelSerializer):
-    categoria = serializers.SerializerMethodField(read_only=True)  # Leer categoría
-    tags = serializers.SerializerMethodField(read_only=True)  # Leer etiquetas
-    folder = serializers.SerializerMethodField(read_only=True)  # Carpeta anidada
-    folder_id = serializers.PrimaryKeyRelatedField(
-        queryset=Folder.objects.none(),  # Dinámicamente configurado
-        source="folder",  # Asocia al campo `folder`
+    # Campos de Entrada (Write-Only)
+    categoria_id = serializers.PrimaryKeyRelatedField(
+        queryset=Categoria.objects.all(),
+        source="categoria",
         write_only=True,
         required=False,
+        help_text="ID de la categoría.",
     )
-    hash = serializers.UUIDField(read_only=True)  # Hash único
-    ruta = serializers.CharField(read_only=True)  # Ruta del archivo
-    content = serializers.SerializerMethodField(read_only=True)  # Contenido del archivo
+    tags_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+        source="tags",
+        write_only=True,
+        required=False,
+        help_text="Lista de IDs de etiquetas.",
+    )
+    folder_id = serializers.PrimaryKeyRelatedField(
+        queryset=Folder.objects.none(),
+        source="folder",
+        write_only=True,
+        required=False,
+        help_text="ID de la carpeta.",
+    )
+
+    # Campos de Salida (Read-Only)
+    categoria = CategoriaSerializer(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    folder = serializers.SerializerMethodField(read_only=True)
+    hash = serializers.UUIDField(read_only=True)
+    ruta = serializers.CharField(read_only=True)
+    content = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Nota
@@ -30,7 +52,9 @@ class NotaSerializer(serializers.ModelSerializer):
             "usuario",
             "titulo",
             "fecha_creacion",
+            "categoria_id",
             "categoria",
+            "tags_ids",
             "tags",
             "folder",
             "folder_id",
@@ -49,29 +73,13 @@ class NotaSerializer(serializers.ModelSerializer):
                 usuario=request.user
             )
 
-    def get_categoria(self, obj):
-        """
-        Devuelve la categoría asociada.
-        """
-        return (
-            {"id": obj.categoria.id, "nombre": obj.categoria.nombre}
-            if obj.categoria
-            else None
-        )
-
-    def get_tags(self, obj):
-        """
-        Devuelve las etiquetas asociadas.
-        """
-        return [{"id": tag.id, "nombre": tag.nombre} for tag in obj.tags.all()]
-
     def get_folder(self, obj):
         """
         Devuelve la carpeta asociada.
         """
-        return (
-            {"id": obj.folder.id, "nombre": obj.folder.nombre} if obj.folder else None
-        )
+        if obj.folder:
+            return {"id": obj.folder.id, "nombre": obj.folder.nombre}
+        return None
 
     def get_content(self, obj):
         """
@@ -91,16 +99,21 @@ class NotaSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Crea una nueva nota con su archivo Markdown asociado.
+        Crea una nueva nota con los datos proporcionados.
         """
         folder = validated_data.pop("folder", None)
+        categoria = validated_data.pop("categoria", None)
+        tags = validated_data.pop("tags", [])
+
         usuario = self.context["request"].user  # Usuario autenticado
 
-        # Remover `usuario` de validated_data si está presente
-        if "usuario" in validated_data:
-            validated_data.pop("usuario")
+        nota = Nota.objects.create(
+            usuario=usuario, folder=folder, categoria=categoria, **validated_data
+        )
 
-        nota = Nota.objects.create(usuario=usuario, folder=folder, **validated_data)
+        if tags:
+            nota.tags.set(tags)
+
         return nota
 
     def update(self, instance, validated_data):
@@ -113,6 +126,15 @@ class NotaSerializer(serializers.ModelSerializer):
         # Si se cambia la carpeta, mover el archivo
         if folder and folder != instance.folder:
             instance.move_to_folder(folder)
+
+        # Actualizar categoría si se proporciona
+        if "categoria" in validated_data:
+            instance.categoria = validated_data.get("categoria")
+
+        # Actualizar etiquetas si se proporcionan
+        if "tags" in validated_data:
+            tags = validated_data.get("tags")
+            instance.tags.set(tags)
 
         # Guardar cambios en el modelo
         instance.save()

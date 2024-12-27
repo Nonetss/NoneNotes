@@ -87,6 +87,7 @@ const NewNote = () => {
     setLoading(true);
     setError(null);
 
+    // Validaciones
     if (!noteTitle.trim()) {
       setError("El título de la nota es obligatorio.");
       setLoading(false);
@@ -99,8 +100,9 @@ const NewNote = () => {
       return;
     }
 
-    if (!selectedTags) {
-      setError("Debe seleccionar un tag.");
+    if (selectedTags.length === 0) {
+      // Verificar si no hay tags seleccionados
+      setError("Debe seleccionar al menos un tag.");
       setLoading(false);
       return;
     }
@@ -109,23 +111,23 @@ const NewNote = () => {
       const response = await api.post("/notas/notas/", {
         titulo: noteTitle,
         folder_id: parseInt(folderId, 10),
-        categoria: parseInt(selectedCategory, 10), // Asegúrate de enviar un número
-        tags: parseInt(selectedTags, 10), // Cambia de string a número si es necesario
+        categoria_id: selectedCategory ? parseInt(selectedCategory, 10) : null, // Manejar categoría opcional
+        tags_ids: selectedTags.map((tag) => parseInt(tag, 10)), // Convertir cada tag a número
       });
 
       console.log("Nota creada:", response);
 
-      // Reseteo de campos
+      // Resetear campos
       setNoteTitle("");
       setFolderId("");
       setSelectedCategory("");
-      setSelectedTags("");
+      setSelectedTags([]);
 
       closeModal();
       location.reload();
     } catch (error) {
       console.error("Error al crear la nota:", error);
-      setError(error.message || "Error desconocido.");
+      setError(error.response?.data?.detail || "Error desconocido.");
     } finally {
       setLoading(false);
     }

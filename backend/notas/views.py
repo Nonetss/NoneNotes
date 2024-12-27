@@ -64,7 +64,7 @@ class NotaListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Asignar el usuario autenticado a la nueva nota
-        serializer.save(usuario=self.request.user)
+        serializer.save()
 
 
 class NotaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
