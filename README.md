@@ -63,7 +63,7 @@ Una vez completado el desarrollo principal, el siguiente paso será dockerizar e
 - [x] Creación de tags
 - [x] Creación de categorías
 - [x] Implementación de filtros
-- [ ] Poder interactuar con las notas
+- [x] Poder modificar el contenido de las notas
 - [ ] Poder mover las notas
 - [ ] Poder mover los folders
 
