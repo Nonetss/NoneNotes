@@ -10,6 +10,10 @@ const NewNote = () => {
   const [noteTitle, setNoteTitle] = useState(""); // Estado para el título de la nota
   const [folderId, setFolderId] = useState(""); // Estado para el folder asociado
   const [folders, setFolders] = useState([]); // Lista de folders disponibles
+  const [categories, setCategories] = useState([]); // Lista de categorías
+  const [tags, setTags] = useState([]); // Lista de tags
+  const [selectedCategory, setSelectedCategory] = useState(""); // Estado para la categoría seleccionada
+  const [selectedTags, setSelectedTags] = useState([]); // Estado para los tags seleccionados
   const [loading, setLoading] = useState(false); // Estado de carga
   const [error, setError] = useState(null); // Estado para manejar errores
   const blendyRef = useRef(null);
@@ -33,7 +37,22 @@ const NewNote = () => {
       }
     };
 
+    // Cargar categorías y tags desde localStorage
+    const fetchCategoriesAndTags = () => {
+      const storedCategories = JSON.parse(localStorage.getItem("category"));
+      const storedTags = JSON.parse(localStorage.getItem("tags"));
+
+      if (storedCategories) {
+        setCategories(storedCategories);
+      }
+
+      if (storedTags) {
+        setTags(storedTags);
+      }
+    };
+
     fetchFolders();
+    fetchCategoriesAndTags();
   }, []);
 
   const openModal = () => {
@@ -52,10 +71,21 @@ const NewNote = () => {
     });
   };
 
+  const handleTagChange = (e) => {
+    const { options } = e.target;
+    const selected = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selected.push(options[i].value);
+      }
+    }
+    setSelectedTags(selected);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Inicia la carga
-    setError(null); // Reinicia el estado de error
+    setLoading(true);
+    setError(null);
 
     if (!noteTitle.trim()) {
       setError("El título de la nota es obligatorio.");
@@ -69,26 +99,35 @@ const NewNote = () => {
       return;
     }
 
+    if (!selectedTags) {
+      setError("Debe seleccionar un tag.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await api.post("/notas/notas/", {
         titulo: noteTitle,
-        folder_id: parseInt(folderId, 10), // Convierte el folder_id a número
+        folder_id: parseInt(folderId, 10),
+        categoria: parseInt(selectedCategory, 10), // Asegúrate de enviar un número
+        tags: parseInt(selectedTags, 10), // Cambia de string a número si es necesario
       });
 
       console.log("Nota creada:", response);
 
-      // Reinicia los campos del formulario
+      // Reseteo de campos
       setNoteTitle("");
       setFolderId("");
+      setSelectedCategory("");
+      setSelectedTags("");
 
-      // Cierra la modal
       closeModal();
       location.reload();
     } catch (error) {
       console.error("Error al crear la nota:", error);
       setError(error.message || "Error desconocido.");
     } finally {
-      setLoading(false); // Finaliza la carga
+      setLoading(false);
     }
   };
 
@@ -137,6 +176,36 @@ const NewNote = () => {
                 >
                   <option value="">Seleccione una carpeta</option>
                   <FolderOptions folders={folders} />
+                </select>
+                <label htmlFor="category">Categoría:</label>
+                <select
+                  id="category"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  required
+                >
+                  <option value="">Seleccione una categoría</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.nombre}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="tags">Tags:</label>
+                <select
+                  id="tags"
+                  multiple
+                  value={selectedTags}
+                  onChange={handleTagChange}
+                  required
+                >
+                  <option value="">Seleccione tags</option>
+                  {tags.map((tag) => (
+                    <option key={tag.id} value={tag.id}>
+                      {tag.nombre}
+                    </option>
+                  ))}
                 </select>
               </div>
               {error && <p className="error-message">{error}</p>}
