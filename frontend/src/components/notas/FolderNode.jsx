@@ -1,9 +1,11 @@
 // FolderNode.js
 import React, { useState } from "react";
 import "./FolderTree.css";
+import { useDrag, useDrop } from "react-dnd";
+import { ItemTypes } from "@/utils/dndTypes";
 import NoteModal from "./NoteModal";
 
-const FolderNode = ({ folder }) => {
+const FolderNode = ({ folder, moveFolder, moveNote }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const hasContent =
@@ -16,8 +18,24 @@ const FolderNode = ({ folder }) => {
     }
   };
 
+  const [, drag] = useDrag({
+    type: ItemTypes.FOLDER,
+    item: { id: folder.id, type: ItemTypes.FOLDER },
+  });
+
+  const [, drop] = useDrop({
+    accept: [ItemTypes.FOLDER, ItemTypes.NOTE],
+    drop: (item) => {
+      if (item.type === ItemTypes.FOLDER) {
+        moveFolder(item.id, folder.id);
+      } else if (item.type === ItemTypes.NOTE) {
+        moveNote(item.id, folder.id);
+      }
+    },
+  });
+
   return (
-    <li className="folder-node">
+    <li ref={(node) => drag(drop(node))} className="folder-node">
       <div className="folder-header" onClick={toggleExpand}>
         {hasContent && (
           <span className={`folder-icon ${isExpanded ? "expanded" : ""}`}>

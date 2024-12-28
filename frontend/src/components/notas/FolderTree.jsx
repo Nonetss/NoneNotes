@@ -4,6 +4,8 @@ import "./FolderTree.css";
 import SearchBar from "./filtros/Buscador";
 import Filtro from "./filtros/Filtros";
 import FolderNode from "./FolderNode";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const FolderTree = () => {
   const [folders, setFolders] = useState([]);
@@ -130,6 +132,85 @@ const FolderTree = () => {
     setFilteredFolders(results);
   };
 
+  const moveFolder = async (folderId, targetFolderId) => {
+    try {
+      // Encuentra la carpeta que se mueve recursivamente
+      const findFolderRecursively = (foldersList, folderId) => {
+        for (const folder of foldersList) {
+          if (folder.id === folderId) return folder;
+          if (folder.subfolders) {
+            const result = findFolderRecursively(folder.subfolders, folderId);
+            if (result) return result;
+          }
+        }
+        return null;
+      };
+
+      const folder = findFolderRecursively(folders, folderId);
+      if (!folder) {
+        console.error(`Carpeta con ID ${folderId} no encontrada.`);
+        return;
+      }
+
+      // Cuerpo de la solicitud
+      const payload = {
+        nombre: folder.nombre, // No lo cambiamos
+        parent: targetFolderId, // El nuevo folder padre
+      };
+
+      // Enviar solicitud al backend
+      await api.patch(`/folders/${folderId}/`, payload);
+      console.log(`Carpeta ${folderId} movida a ${targetFolderId}`);
+
+      // Actualiza el estado local
+      setFolders((prevFolders) => {
+        const moveFolderInState = (foldersList, folderId, targetFolderId) => {
+          let movingFolder = null;
+
+          // Elimina la carpeta de su ubicación actual
+          const updatedFolders = foldersList.filter((folder) => {
+            if (folder.id === folderId) {
+              movingFolder = folder;
+              return false;
+            }
+            if (folder.subfolders) {
+              folder.subfolders = moveFolderInState(
+                folder.subfolders,
+                folderId,
+                targetFolderId,
+              );
+            }
+            return true;
+          });
+
+          // Encuentra el nuevo padre e inserta la carpeta movida
+          if (movingFolder) {
+            updatedFolders.forEach((folder) => {
+              if (folder.id === targetFolderId) {
+                folder.subfolders = folder.subfolders || [];
+                folder.subfolders.push(movingFolder);
+              }
+            });
+          }
+
+          return updatedFolders;
+        };
+
+        return moveFolderInState([...prevFolders], folderId, targetFolderId);
+      });
+    } catch (error) {
+      console.error(
+        "Error al mover la carpeta:",
+        error.response?.data || error,
+      );
+    }
+  };
+
+  const moveNote = (noteId, targetFolderId) => {
+    console.log(`Mover nota ${noteId} a ${targetFolderId}`);
+    // Implementa la lógica para mover una nota a otra carpeta
+  };
+
   return (
     <div className="global">
       <div className="primero">
@@ -140,9 +221,16 @@ const FolderTree = () => {
         </div>
       </div>
       {filteredFolders.map((folder) => (
-        <ul key={folder.id} className="folder-tree">
-          <FolderNode folder={folder} />
-        </ul>
+        <DndProvider backend={HTML5Backend}>
+          <ul key={folder.id} className="folder-tree">
+            <FolderNode
+              key={folder.id}
+              folder={folder}
+              moveFolder={moveFolder}
+              moveNote={moveNote}
+            />
+          </ul>
+        </DndProvider>
       ))}
     </div>
   );

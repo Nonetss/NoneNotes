@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { createBlendy } from "blendy";
 import ReactMarkdown from "react-markdown";
 import MdEditor from "react-markdown-editor-lite";
+import { useDrag } from "react-dnd";
+import { ItemTypes } from "@/utils/dndTypes";
 import api from "@/utils/api";
 import "./NoteModal.css";
 import "./NoteEdicion.css";
@@ -12,6 +14,7 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [updatedContent, setUpdatedContent] = useState(content);
+  const [error, setError] = useState(null);
   const blendyRef = useRef(null);
 
   useEffect(() => {
@@ -34,11 +37,13 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
       setIsAnimating(false);
       setIsModalOpen(false);
       setIsEditing(false);
+      setError(null);
     });
   };
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
+    setError(null); // Limpiar errores al cambiar modo
   };
 
   const handleEditorChange = ({ text }) => {
@@ -57,10 +62,18 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
       } else {
         console.warn("onUpdate no es una función válida");
       }
+
+      setIsEditing(false); // Salir del modo de edición
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
+      setError("No se pudieron guardar los cambios. Intenta nuevamente.");
     }
   };
+
+  const [, drag] = useDrag({
+    type: ItemTypes.NOTE,
+    item: { id, type: ItemTypes.NOTE }, // Usamos `id` directamente
+  });
 
   return (
     <div>
@@ -68,6 +81,7 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
         className="note-summary"
         onClick={openModal}
         data-blendy-from={`note-modal-${id}`}
+        ref={drag}
       >
         <h3>{title}</h3>
         <p style={{ fontStyle: "italic" }}>{date}</p>
@@ -105,6 +119,7 @@ const NoteModal = ({ id, title, date, content, onUpdate }) => {
                 <ReactMarkdown>{updatedContent}</ReactMarkdown>
               )}
             </div>
+            {error && <p className="error-message">{error}</p>}
             <div className="modal-actions">
               {isEditing ? (
                 <>

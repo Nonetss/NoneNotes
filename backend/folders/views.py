@@ -10,8 +10,13 @@ class FolderViewSet(ModelViewSet):
     serializer_class = FolderSerializer
 
     def get_queryset(self):
-        # Filtrar solo las carpetas raíz asociadas al usuario autenticado
-        return Folder.objects.filter(parent=None, usuario=self.request.user)
+        user = self.request.user
+        if self.action == "list":
+            # Solo carpetas raíz para la acción de listado
+            return Folder.objects.filter(parent=None, usuario=user)
+        else:
+            # Todas las carpetas del usuario para otras acciones
+            return Folder.objects.filter(usuario=user)
 
     def perform_create(self, serializer):
         # Asignar automáticamente el usuario autenticado
