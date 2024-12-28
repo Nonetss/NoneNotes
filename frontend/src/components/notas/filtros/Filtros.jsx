@@ -83,7 +83,7 @@ const Filtro = ({ onApplyFilters }) => {
   return (
     <div className="filter-container">
       <div
-        className="create-category button"
+        className="filtre button"
         onClick={openModal}
         data-blendy-from="filtro"
       >
