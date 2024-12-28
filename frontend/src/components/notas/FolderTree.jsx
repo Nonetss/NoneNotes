@@ -143,12 +143,36 @@ const FolderTree = () => {
       }
 
       // Verificar que no se mueva a sí misma o a una de sus subcarpetas
+
       const isDescendant = (folders, id, targetId) => {
-        const targetFolder = folders.find((f) => f.id === targetId);
-        if (!targetFolder) return false;
-        if (targetFolder.parent === id) return true;
-        if (!targetFolder.parent) return false;
-        return isDescendant(folders, id, targetFolder.parent);
+        if (id === targetId) {
+          // Si intentas mover una carpeta dentro de sí misma, devolvemos true
+          console.error("No puedes mover una carpeta dentro de sí misma.");
+          return true;
+        }
+
+        const findFolderById = (folders, folderId) => {
+          for (const folder of folders) {
+            if (folder.id === folderId) return folder;
+            if (folder.subfolders?.length > 0) {
+              const result = findFolderById(folder.subfolders, folderId);
+              if (result) return result;
+            }
+          }
+          return null;
+        };
+
+        const checkDescendant = (folder, targetId) => {
+          if (!folder) return false;
+          if (folder.subfolders?.some((sub) => sub.id === targetId))
+            return true;
+          return folder.subfolders?.some((sub) =>
+            checkDescendant(sub, targetId),
+          );
+        };
+
+        const folder = findFolderById(folders, id);
+        return checkDescendant(folder, targetId);
       };
 
       if (isDescendant(folders, folderId, targetFolderId)) {
