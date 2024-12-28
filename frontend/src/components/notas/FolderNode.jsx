@@ -18,18 +18,34 @@ const FolderNode = ({ folder, moveFolder, moveNote }) => {
     }
   };
 
+  // Drag logic
   const [, drag] = useDrag({
     type: ItemTypes.FOLDER,
     item: { id: folder.id, type: ItemTypes.FOLDER },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
+
+  // Drop logic
 
   const [, drop] = useDrop({
     accept: [ItemTypes.FOLDER, ItemTypes.NOTE],
     drop: (item) => {
-      if (item.type === ItemTypes.FOLDER) {
-        moveFolder(item.id, folder.id);
-      } else if (item.type === ItemTypes.NOTE) {
-        moveNote(item.id, folder.id);
+      if (!item.handled) {
+        // Prevenir duplicaciones
+        item.handled = true;
+        if (item.type === ItemTypes.FOLDER) {
+          console.log(
+            `Intentando mover carpeta: ID ${item.id} -> Target ID ${folder.id}`,
+          );
+          moveFolder(item.id, folder.id);
+        } else if (item.type === ItemTypes.NOTE) {
+          console.log(
+            `Intentando mover nota: ID ${item.id} -> Target ID ${folder.id}`,
+          );
+          moveNote(item.id, folder.id);
+        }
       }
     },
   });
@@ -50,13 +66,18 @@ const FolderNode = ({ folder, moveFolder, moveNote }) => {
         >
           {folder.subfolders &&
             folder.subfolders.map((subfolder) => (
-              <FolderNode key={subfolder.id} folder={subfolder} />
+              <FolderNode
+                key={subfolder.id}
+                folder={subfolder}
+                moveFolder={moveFolder}
+                moveNote={moveNote}
+              />
             ))}
           {folder.notes &&
             folder.notes.map((note) => (
               <NoteModal
                 key={note.id}
-                id={note.id} // Aquí pasas el ID de la nota
+                id={note.id}
                 title={note.titulo}
                 date={new Date(note.fecha_creacion).toLocaleDateString(
                   "es-ES",
@@ -74,5 +95,4 @@ const FolderNode = ({ folder, moveFolder, moveNote }) => {
     </li>
   );
 };
-
 export default FolderNode;

@@ -1,3 +1,4 @@
+// FolderTree.jsx
 import React, { useState, useEffect } from "react";
 import api from "@/utils/api";
 import "./FolderTree.css";
@@ -134,70 +135,74 @@ const FolderTree = () => {
 
   const moveFolder = async (folderId, targetFolderId) => {
     try {
-      // Encuentra la carpeta que se mueve recursivamente
-      const findFolderRecursively = (foldersList, folderId) => {
-        for (const folder of foldersList) {
-          if (folder.id === folderId) return folder;
-          if (folder.subfolders) {
-            const result = findFolderRecursively(folder.subfolders, folderId);
-            if (result) return result;
-          }
-        }
-        return null;
-      };
-
-      const folder = findFolderRecursively(folders, folderId);
-      if (!folder) {
+      // Encuentra la carpeta a mover
+      const folderToMove = folders.find((folder) => folder.id === folderId);
+      if (!folderToMove) {
         console.error(`Carpeta con ID ${folderId} no encontrada.`);
         return;
       }
 
-      // Cuerpo de la solicitud
-      const payload = {
-        nombre: folder.nombre, // No lo cambiamos
-        parent: targetFolderId, // El nuevo folder padre
+      // Verificar que no se mueva a sí misma o a una de sus subcarpetas
+      const isDescendant = (folders, id, targetId) => {
+        const targetFolder = folders.find((f) => f.id === targetId);
+        if (!targetFolder) return false;
+        if (targetFolder.parent === id) return true;
+        if (!targetFolder.parent) return false;
+        return isDescendant(folders, id, targetFolder.parent);
       };
 
-      // Enviar solicitud al backend
-      await api.patch(`/folders/${folderId}/`, payload);
-      console.log(`Carpeta ${folderId} movida a ${targetFolderId}`);
+      if (isDescendant(folders, folderId, targetFolderId)) {
+        console.error("No puedes mover una carpeta a una de sus subcarpetas.");
+        return;
+      }
 
-      // Actualiza el estado local
-      setFolders((prevFolders) => {
-        const moveFolderInState = (foldersList, folderId, targetFolderId) => {
-          let movingFolder = null;
+      // Actualizar en el backend
+      await api.patch(`/folders/${folderId}/`, { parent: targetFolderId });
 
-          // Elimina la carpeta de su ubicación actual
-          const updatedFolders = foldersList.filter((folder) => {
-            if (folder.id === folderId) {
-              movingFolder = folder;
-              return false;
-            }
-            if (folder.subfolders) {
-              folder.subfolders = moveFolderInState(
-                folder.subfolders,
-                folderId,
-                targetFolderId,
-              );
-            }
-            return true;
-          });
+      // Actualizar localmente
+      const updateHierarchy = (folders, folderId, targetFolderId) => {
+        let folderToMove = null;
 
-          // Encuentra el nuevo padre e inserta la carpeta movida
-          if (movingFolder) {
-            updatedFolders.forEach((folder) => {
-              if (folder.id === targetFolderId) {
-                folder.subfolders = folder.subfolders || [];
-                folder.subfolders.push(movingFolder);
-              }
-            });
+        const updatedFolders = folders.map((folder) => {
+          // Si es la carpeta que queremos mover, extraerla
+          if (folder.id === folderId) {
+            folderToMove = { ...folder };
+            return null; // Eliminarla de su posición actual
           }
 
-          return updatedFolders;
-        };
+          // Recursivamente actualizar subcarpetas
+          if (folder.subfolders) {
+            const result = updateHierarchy(
+              folder.subfolders,
+              folderId,
+              targetFolderId,
+            );
+            folder.subfolders = result.updatedFolders;
+            folderToMove = folderToMove || result.folderToMove;
+          }
+          return folder;
+        });
 
-        return moveFolderInState([...prevFolders], folderId, targetFolderId);
-      });
+        // Si encontramos la carpeta, agregarla al nuevo parent
+        if (folderToMove) {
+          updatedFolders.forEach((folder) => {
+            if (folder.id === targetFolderId) {
+              folder.subfolders = [...(folder.subfolders || []), folderToMove];
+            }
+          });
+        }
+
+        return { updatedFolders: updatedFolders.filter(Boolean), folderToMove };
+      };
+
+      const { updatedFolders } = updateHierarchy(
+        folders,
+        folderId,
+        targetFolderId,
+      );
+      setFolders(updatedFolders);
+
+      console.log(`Carpeta ${folderId} movida a ${targetFolderId}`);
     } catch (error) {
       console.error(
         "Error al mover la carpeta:",
@@ -220,18 +225,20 @@ const FolderTree = () => {
           <SearchBar onSearch={handleSearch} />
         </div>
       </div>
-      {filteredFolders.map((folder) => (
-        <DndProvider backend={HTML5Backend}>
-          <ul key={folder.id} className="folder-tree">
-            <FolderNode
-              key={folder.id}
-              folder={folder}
-              moveFolder={moveFolder}
-              moveNote={moveNote}
-            />
-          </ul>
-        </DndProvider>
-      ))}
+      <DndProvider backend={HTML5Backend}>
+        {filteredFolders
+          .filter((folder) => folder.parent === null)
+          .map((folder) => (
+            <ul className="folder-tree">
+              <FolderNode
+                key={folder.id}
+                folder={folder}
+                moveFolder={moveFolder}
+                moveNote={moveNote}
+              />
+            </ul>
+          ))}
+      </DndProvider>
     </div>
   );
 };
